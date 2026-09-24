@@ -17,6 +17,8 @@ class LoginPage:
     CONFIRMATION_MESSAGE = (By.CSS_SELECTOR, "p")   # Alert '"Login or Password incorrect"' The second alert
 
     OK_BTN =(By.XPATH,"//*[text()='OK']")
+    OK_BTN_2 = (By.CSS_SELECTOR,"a.btn--primary[href='/search']")
+
     LOG_OUT_BTN = (By.XPATH,"//*[text()='Log out']")
 
 #errors
@@ -61,9 +63,20 @@ class LoginPage:
         element = WebDriverWait(self.driver, timeout=5).until(
             EC.visibility_of_element_located(self.CONFIRMATION_MESSAGE))
         return element.text
-# ---------------------------------------------------
+
     def close_window(self):
         self.driver.find_element(*self.OK_BTN).click()
+
+# ---------------------------------------------------
+    def close_window_2(self):
+        ok_btn = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable(self.OK_BTN_2)
+        )
+        ok_btn.click()
+
+    def scroll_down(self) -> None:
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+# ---------------------------------------------------
 
     def is_logged(self):
         try:

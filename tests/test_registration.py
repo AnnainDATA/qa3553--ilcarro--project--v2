@@ -1,6 +1,8 @@
 import random
 import time
 
+import pytest
+
 from pages.registration_page import RegistrationPage
 from models.user import User
 
@@ -97,6 +99,7 @@ def test_registration_with_empty_email(driver):
     assert registration_page.error_message_text() == "Email is required"
     assert registration_page.submit_button_disabled()
 
+#------Fall in registration with incorrect short password------
 def test_registration_with_wrong_password(driver):
     registration_page = RegistrationPage(driver)
 
@@ -114,7 +117,7 @@ def test_registration_with_wrong_password(driver):
     assert registration_page.error_message_text() == "Password must contain minimum 6 symbols"
     assert registration_page.submit_button_disabled()
 
-#------Fall in registration with incorrect pwd------
+#------Fall in registration with empty Password------
 def test_registration_with_empty_password(driver):
     registration_page = RegistrationPage(driver)
 
@@ -131,6 +134,24 @@ def test_registration_with_empty_password(driver):
 
     assert registration_page.error_message_text() == "Password is required"
     assert registration_page.submit_button_disabled()
+
+#------Fall in registration with the 7 symbols pwd------
+def test_registration_with_short_password(driver):
+    registration_page = RegistrationPage(driver)
+
+    user = User(
+        "Dolores",
+        "Mary Eileen",
+        f"dolores_1971@gmail.com",
+        "Mary11!"
+    )
+    registration_page.open_registration_form()
+    registration_page.fill_registration_form(user)
+    registration_page.check_policy()
+    registration_page.submit_registration()
+
+    assert registration_page.confirmation_text() == "Registration failed"
+    assert registration_page.confirmation_message() == '"[object Object]"' # it's a wrong alert message!
 
 #------Fall in registration with unsigned checkbox------
 def test_registration_without_checkbox(driver):
@@ -171,15 +192,41 @@ def test_registration_with_the_same_email(driver):
     registration_page.open_registration_form()
     registration_page.fill_registration_form(user1)
     registration_page.check_policy()
-    time.sleep(5)
+    time.sleep(2)
     registration_page.submit_registration()
     registration_page.close_window1()
 
     registration_page.fill_registration_form(user2)
     registration_page.check_policy()
-    time.sleep(5)
+    time.sleep(2)
     registration_page.submit_registration()
 
     assert registration_page.confirmation_text() == "Registration failed"
-    #assert registration_page.confirmation_message() == '"[object Object]"' #why I can"t receive whis alert?
+    #assert registration_page.confirmation_message() == '"[object Object]"' #why I can"t get whis alert!?
     registration_page.close_window1()
+
+#---------------------------------------------------
+@pytest.mark.skip (reason  = "BUG")
+# Expected result: After completing registration, the user should be redirected to the main page / login page
+# or the page should refresh.
+# Actual result: The page does not refresh after registration,
+# allowing the user to register repeatedly in a loop.
+
+def test_registration_success_five_times(driver):
+    registration_page = RegistrationPage(driver)
+    registration_page.open_registration_form()
+    for i in range(1, 6):
+        random_suffix = random.randint(1, 1000000)
+        email = f"dolores_{random_suffix}@gmail.com"
+
+        user = User(
+            "Dolores",
+            "Mary Eileen",
+            email,
+            "MaryE1971!"
+        )
+        print(f"\n[Registration {i} from 5] User: {email}")
+        registration_page.fill_registration_form(user)
+        registration_page.check_policy()
+        registration_page.submit_registration()
+        registration_page.close_window()
