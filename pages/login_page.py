@@ -3,10 +3,12 @@ from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from pages.base_page import BasePage
 
-class LoginPage:
 
-    LOGIN_NAV_LINK = (By.CSS_SELECTOR,"[href='/login']")
+class LoginPage(BasePage):
+
+    NAV_LOGIN_BTN = (By.CSS_SELECTOR,"[href='/login']")
     EMAIL_INPUT = (By.CSS_SELECTOR,"input[name='username']")
     PASSWORD_INPUT = (By.CSS_SELECTOR,"input[name='password']")
 
@@ -29,24 +31,18 @@ class LoginPage:
 
     ALERT_LOGIN_FAILED = (By.XPATH,"//*[text()='Login failed']")
 
-
-    def __init__(self,driver):
-        self.driver=driver
-
     def open_login_form(self):
-        self.driver.find_element(*self.LOGIN_NAV_LINK).click()
+        self.click(self.NAV_LOGIN_BTN)
         time.sleep(2)
 
     def fill_email(self,email):
-        self.driver.find_element(*self.EMAIL_INPUT).clear()
-        self.driver.find_element(*self.EMAIL_INPUT).send_keys(email)
+        self.fill(self.EMAIL_INPUT,email)
 
     def fill_password(self,password):
-        self.driver.find_element(*self.PASSWORD_INPUT).clear()
-        self.driver.find_element(*self.PASSWORD_INPUT).send_keys(password)
+        self.fill(self.PASSWORD_INPUT,password)
 
     def submit_login(self):
-        self.driver.find_element(*self.YALLA_BTN).click()
+        self.click(self.YALLA_BTN)
 
 # General method for filling in login and password
     def login(self,email,password):
@@ -65,7 +61,7 @@ class LoginPage:
         return element.text
 
     def close_window(self):
-        self.driver.find_element(*self.OK_BTN).click()
+        self.click(self.OK_BTN)
 
 # ---------------------------------------------------
     def close_window_2(self):

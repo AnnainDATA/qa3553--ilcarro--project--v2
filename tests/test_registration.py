@@ -1,8 +1,8 @@
 import random
 import time
-
 import pytest
 
+from data.user_data import create_user
 from pages.registration_page import RegistrationPage
 from models.user import User
 
@@ -10,13 +10,8 @@ from models.user import User
 #------Check that User can register with correct values------
 def test_registration_success(driver):
     registration_page = RegistrationPage(driver)
-    random_suffix = random.randint(1,1000000)
-    user=User(
-        "Dolores",
-        "Mary Eileen",
-        f"dolores_{random_suffix}@gmail.com",
-        "MaryE1971!"
-    )
+    user = create_user()
+
     registration_page.open_registration_form()
     registration_page.fill_registration_form(user)
     registration_page.check_policy()
@@ -30,13 +25,8 @@ def test_registration_success(driver):
 #------Fall in registration with empty field "Name"------
 def test_registration_with_empty_name(driver):
     registration_page = RegistrationPage(driver)
+    user = create_user(name = "")
 
-    user = User(
-        "",
-        "Mary Eileen",
-        f"dolores_1971@gmail.com",
-        "MaryE1971!"
-    )
     registration_page.open_registration_form()
     registration_page.fill_registration_form(user)
     registration_page.check_policy()
@@ -48,13 +38,8 @@ def test_registration_with_empty_name(driver):
 #------Fall in registration with empty field "Last Name"------
 def test_registration_with_empty_lastname(driver):
     registration_page = RegistrationPage(driver)
+    user = create_user(last_name="")
 
-    user = User(
-        "Dolores",
-        "",
-        f"dolores_1971@gmail.com",
-        "MaryE1971!"
-    )
     registration_page.open_registration_form()
     registration_page.fill_registration_form(user)
     registration_page.check_policy()
@@ -66,13 +51,8 @@ def test_registration_with_empty_lastname(driver):
 #------Fall in registration with incorrect email------
 def test_registration_with_wrong_email(driver):
     registration_page = RegistrationPage(driver)
+    user = create_user(email="dolores_1971gmail.com")
 
-    user = User(
-        "Dolores",
-        "Mary Eileen",
-        f"dolores_1971gmail.com",
-        "MaryE1971!"
-    )
     registration_page.open_registration_form()
     registration_page.fill_registration_form(user)
     registration_page.check_policy()
@@ -84,13 +64,8 @@ def test_registration_with_wrong_email(driver):
 #------Fall in registration with empty field "Email"------
 def test_registration_with_empty_email(driver):
     registration_page = RegistrationPage(driver)
+    user = create_user(email="")
 
-    user = User(
-        "Dolores",
-        "Mary Eileen",
-        "",
-        "MaryE1971!"
-    )
     registration_page.open_registration_form()
     registration_page.fill_registration_form(user)
     registration_page.check_policy()
@@ -102,13 +77,8 @@ def test_registration_with_empty_email(driver):
 #------Fall in registration with incorrect short password------
 def test_registration_with_wrong_password(driver):
     registration_page = RegistrationPage(driver)
+    user = create_user(password="MMM")
 
-    user = User(
-        "Dolores",
-        "Mary Eileen",
-        f"dolores_1971@gmail.com",
-        "Mary"
-    )
     registration_page.open_registration_form()
     registration_page.fill_registration_form(user)
     registration_page.check_policy()
@@ -120,13 +90,8 @@ def test_registration_with_wrong_password(driver):
 #------Fall in registration with empty Password------
 def test_registration_with_empty_password(driver):
     registration_page = RegistrationPage(driver)
+    user = create_user(password="")
 
-    user = User(
-        "Dolores",
-        "Mary Eileen",
-        f"dolores_1971@gmail.com",
-        ""
-    )
     registration_page.open_registration_form()
     registration_page.fill_registration_form(user)
     registration_page.check_policy()
@@ -138,13 +103,8 @@ def test_registration_with_empty_password(driver):
 #------Fall in registration with the 7 symbols pwd------
 def test_registration_with_short_password(driver):
     registration_page = RegistrationPage(driver)
+    user = create_user(password="Mary11!")
 
-    user = User(
-        "Dolores",
-        "Mary Eileen",
-        f"dolores_1971@gmail.com",
-        "Mary11!"
-    )
     registration_page.open_registration_form()
     registration_page.fill_registration_form(user)
     registration_page.check_policy()
@@ -156,13 +116,8 @@ def test_registration_with_short_password(driver):
 #------Fall in registration with unsigned checkbox------
 def test_registration_without_checkbox(driver):
     registration_page = RegistrationPage(driver)
+    user = create_user()
 
-    user = User(
-        "Dolores",
-        "Mary Eileen",
-        f"dolores_1971@gmail.com",
-        "MaryE1971!"
-    )
     registration_page.open_registration_form()
     registration_page.fill_registration_form(user)
     registration_page.check_policy()
