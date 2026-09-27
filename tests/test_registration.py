@@ -49,15 +49,37 @@ def test_registration_with_empty_lastname(driver):
     assert registration_page.submit_button_disabled()
 
 #------Fall in registration with incorrect email------
-def test_registration_with_wrong_email(driver):
+INVALID_EMAILS = [
+    "",
+    "simon@@gmail.com",
+    "simongmail.com",
+    "simon@gmail",
+    "simon1@",
+    "simonsimonsimonsimonsimonsimonsimonsimon@gmail.com",
+    "simon@gmailgmail.com",
+    "s@g",
+    "gmail.com@סימון",
+    "  simon@gmail.com",
+    "simon@gmail.com   ",
+    "##@gmail.com",
+    "%%!!@gmail.com",
+    "simon@gmail.com simon@gmail.com",
+    "simon@gmail.comsimon@gmail.com"
+]
+PASSWORDS = []
+@pytest.mark.parametrize("invalid_email", INVALID_EMAILS)
+def test_registration_with_wrong_email(driver,invalid_email):
+
     registration_page = RegistrationPage(driver)
-    user = create_user(email="dolores_1971gmail.com")
+    user = create_user(email=invalid_email)
+    PASSWORDS.append(user.password)
 
     registration_page.open_registration_form()
     registration_page.fill_registration_form(user)
     registration_page.check_policy()
     registration_page.submit_registration()
 
+    print(PASSWORDS)
     assert registration_page.error_message_text() == "Wrong email format"
     assert registration_page.submit_button_disabled()
 
@@ -131,19 +153,9 @@ def test_registration_without_checkbox(driver):
 def test_registration_with_the_same_email(driver):
     registration_page = RegistrationPage(driver)
     random_suffix = random.randint(1, 1000000)
+    user1 = create_user(email = f"dolores_{random_suffix}@gmail.com")
+    user2 = create_user(email=f"dolores_{random_suffix}@gmail.com")
 
-    user1 = User(
-        "Dolores",
-        "Mary Eileen",
-        f"dolores_{random_suffix}@gmail.com",
-        "MaryE1971!"
-    )
-    user2 = User(
-        "Santa",
-        "Barbara",
-        f"dolores_{random_suffix}@gmail.com",
-        "Sants1972!"
-    )
     registration_page.open_registration_form()
     registration_page.fill_registration_form(user1)
     registration_page.check_policy()

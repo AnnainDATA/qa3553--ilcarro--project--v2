@@ -1,0 +1,42 @@
+import uuid
+
+from faker import Faker
+
+from models.car import Car
+
+faker = Faker()
+CITY_OPTIONS = ["Tel Aviv", "Jerusalem", "Haifa", "Rishon LeZion", "Petah Tikva",
+                "Ashdod", "Netanya", "Beersheba", "Bnei Brak", "Holon", "Ramat Gan",
+                "Ashkelon", "Rehovot", "Bat Yam", "Beit Shemesh", "Kfar Saba", "Herzliya",
+                "Hadera", "Modi'in-Maccabim-Re'ut", "Nazareth", "Lod", "Ramla", "Ra'anana",
+                "Rosh HaAyin", "Acre", "Eilat", "Kiryat Ata", "Kiryat Gat", "Kiryat Yam",
+                "Kiryat Motzkin", "Kiryat Bialik", "Nahariya", "Tiberias", "Safed", "Afula",
+                "Carmiel", "Nes Ziona", "Yavne", "Or Yehuda", "Givatayim", "Kiryat Ono", "Umm al-Fahm",
+                "Sakhnin", "Tamra", "Tayibe", "Tira", "Ma'alot-Tarshiha", "Migdal HaEmek",
+                "Sderot", "Arad", "Dimona", "Ofakim", "Yeruham", "Kiryat Shmona"]
+
+FUEL_OPTIONS = ["Petrol","Diesel","Hybrid","Electric"]
+MANUFACTURE_OPTIONS = ["Toyota", "Honda", "Ford", "BMW", "Mazda"]
+MODEL_OPTIONS = ["Camry", "Civic", "Focus", "X5", "Premium"]
+CAR_CLASS_OPTIONS = ["Economy","Comfort","Business","Premium"]
+GEAR_OPTIONS = ["Automatic", "Manual"]
+WHEELS_DRIVE_OPTIONS = ["FWD", "RWD", "AWD"]
+
+def create_car(city = None, manufacture = None, model = None, year = None,
+               fuel = None, seats = None, car_class = None, serial_number = None, price_per_day = None):
+    return Car(
+        city = city if city is not None else faker.random_element(CITY_OPTIONS),
+        manufacture = manufacture if manufacture is not None else faker.random_element(MANUFACTURE_OPTIONS),
+        model = model if model is not None else faker.random_element(MODEL_OPTIONS),
+        year = year if year is not None else faker.random_int(min = 2000, max = 2026),
+        fuel = fuel if fuel is not None else faker.random_element(FUEL_OPTIONS),
+        #seats= seats if seats is not None else faker.random_int(min=2, max=7),
+        car_class = car_class if car_class is not None else faker.random_element(CAR_CLASS_OPTIONS),
+        serial_number = serial_number if serial_number is not None else "MM"+uuid.uuid4().hex[:8].upper(),
+        price_per_day = price_per_day if price_per_day is not None else faker.random_int(min=20,max=500)
+    )
+        #gear = gear if gear is not None else faker.random_element(GEAR_OPTIONS),
+        #wheels_drive = wheels_drive if wheels_drive is not None else faker.random_element(WHEELS_DRIVE_OPTIONS),
+        #photo_path=photo_path
+
+
