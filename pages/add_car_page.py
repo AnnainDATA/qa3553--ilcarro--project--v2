@@ -35,7 +35,10 @@ class AddCarPage(BasePage):
         option_locator = (By.CSS_SELECTOR, f"[data-testid='city-option'][data-value='{city}']")
         option = WebDriverWait(self.driver,5).until(EC.element_to_be_clickable(option_locator))
         option.click()
-
+# -------------------------------------------------------
+    def fill_city_not_in_list(self,city):
+        self.fill(self.CITY_INPUT,city)
+# -------------------------------------------------------
     def fill_manufacture(self,manufacture):
         self.fill(self.MANUFACTURE_INPUT,manufacture)
 
@@ -84,7 +87,52 @@ class AddCarPage(BasePage):
         self.fill_price(car.price_per_day)
         if car.photo_path:
             self.upload_photo(car.photo_path)
+#-------------------------------------------------------
+    def fill_car_empty_city(self, car):
+        #self.fill_city(car.city)
+        self.fill_manufacture(car.manufacture)
+        self.fill_model(car.model)
+        self.fill_year(car.year)
+        self.select_fuel(car.fuel)
+        self.select_gear(car.gear)
+        self.select_wheels_drive(car.wheels_drive)
+        self.fill_seats(car.seats)
+        self.fill_car_class(car.car_class)
+        self.fill_serial_number(car.serial_number)
+        self.fill_price(car.price_per_day)
+        if car.photo_path:
+            self.upload_photo(car.photo_path)
 
+    def fill_car_empty_fuel(self, car):
+        self.fill_city(car.city)
+        self.fill_manufacture(car.manufacture)
+        self.fill_model(car.model)
+        self.fill_year(car.year)
+        #self.select_fuel(car.fuel)
+        self.select_gear(car.gear)
+        self.select_wheels_drive(car.wheels_drive)
+        self.fill_seats(car.seats)
+        self.fill_car_class(car.car_class)
+        self.fill_serial_number(car.serial_number)
+        self.fill_price(car.price_per_day)
+        if car.photo_path:
+            self.upload_photo(car.photo_path)
+
+    def fill_car_not_in_list(self, car):
+        self.fill_city_not_in_list(car.city) #!not in list
+        self.fill_manufacture(car.manufacture)
+        self.fill_model(car.model)
+        self.fill_year(car.year)
+        self.select_fuel(car.fuel)
+        self.select_gear(car.gear)
+        self.select_wheels_drive(car.wheels_drive)
+        self.fill_seats(car.seats)
+        self.fill_car_class(car.car_class)
+        self.fill_serial_number(car.serial_number)
+        self.fill_price(car.price_per_day)
+        if car.photo_path:
+            self.upload_photo(car.photo_path)
+# -------------------------------------------------------
     def error_message_text(self):
         element = WebDriverWait(self.driver, 5).until(
             EC.visibility_of_element_located(self.ERROR_MESSAGE))
@@ -93,4 +141,10 @@ class AddCarPage(BasePage):
     def upload_photo(self,file_path):
         absolute_path = os.path.abspath(file_path)
         self.find(self.PHOTO_FILE_INPUT).send_keys(absolute_path)
+
+    def add_car_submit_button_disabled(self):
+        element = WebDriverWait(self.driver, 5).until(
+            EC.presence_of_element_located(self.SUBMIT_BTN)
+        )
+        return element.get_attribute("disabled") is not None
 

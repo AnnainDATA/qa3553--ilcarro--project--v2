@@ -3,16 +3,43 @@ from faker import Faker
 from models.car import Car
 
 faker = Faker()
-CITY_OPTIONS = ["Tel Aviv", "Jerusalem", "Haifa", "Rishon LeZion", "Petah Tikva",
-                "Ashdod", "Netanya", "Beersheba", "Bnei Brak", "Holon", "Ramat Gan",
-                "Ashkelon", "Rehovot", "Bat Yam", "Beit Shemesh", "Kfar Saba", "Herzliya",
-                "Hadera", "Modi'in-Maccabim-Re'ut", "Nazareth", "Lod", "Ramla", "Ra'anana",
-                "Rosh HaAyin", "Acre", "Eilat", "Kiryat Ata", "Kiryat Gat", "Kiryat Yam",
-                "Kiryat Motzkin", "Kiryat Bialik", "Nahariya", "Tiberias", "Safed", "Afula",
-                "Carmiel", "Nes Ziona", "Yavne", "Or Yehuda", "Givatayim", "Kiryat Ono", "Umm al-Fahm",
-                "Sakhnin", "Tamra", "Tayibe", "Tira", "Ma'alot-Tarshiha", "Migdal HaEmek",
-                "Sderot", "Arad", "Dimona", "Ofakim", "Yeruham", "Kiryat Shmona"]
+#----------------------------------------------------------------------------------------------------------
+CITY_OPTIONS = ["Acre", "Afula", "Arad", "Ashdod", "Ashkelon", "Bat Yam", "Beersheba", "Beit Shemesh",
+                "Bnei Brak", "Carmiel", "Dimona", "Eilat", "Givatayim", "Hadera", "Haifa", "Herzliya",
+                "Holon", "Jerusalem", "Kfar Saba", "Kiryat Ata", "Kiryat Bialik", "Kiryat Gat",
+                "Kiryat Motzkin", "Kiryat Ono", "Kiryat Shmona", "Kiryat Yam", "Lod", "Ma'alot-Tarshiha",
+                "Migdal HaEmek", "Modi'in-Maccabim-Re'ut", "Nahariya", "Nazareth", "Nes Ziona",
+                "Netanya", "Ofakim", "Or Yehuda", "Petah Tikva", "Ra'anana", "Ramat Gan", "Ramla",
+                "Rehovot", "Rishon LeZion", "Rosh HaAyin", "Safed", "Sakhnin", "Sderot", "Tamra",
+                "Tayibe", "Tel Aviv", "Tiberias", "Tira", "Umm al-Fahm", "Yavne", "Yeruham"]
+#----------------------------------------------------------------------------------------------------------
+CITY_OPTIONS_SWAGGER = ["Ashdod", "Ashkelon", "Bat Yam", "Beer Sheva", "Bnei Brak", "Dimona", "Eilat",
+                        "Givatayim", "Hadera", "Haifa", "Herzliya", "Hod HaSharon", "Holon", "Jerusalem",
+                        "Kfar Saba", "Modiin", "Nazareth", "Netanya", "Petah Tikva", "Qiryat Ata",
+                        "Qiryat Bialik", "Qiryat Gat", "Qiryat Malakhi", "Qiryat Motzkin", "Qiryat Ono",
+                        "Qiryat Shemona", "Qiryat Tivon", "Qiryat Yam", "Qiryat Ye'arim",
+                        "Qiryat Yovel", "Raanana", "Ramat Gan", "Rehovot", "Rishon LeZion",
+                        "Sderot", "Tel Aviv", "Tiberias"]
+#----------------------------------------------------------------------------------------------------------
+def find_matching_cities(city_options, city_options_swagger):
+    result = []
+    for city in city_options:
+        if city in city_options_swagger:
+            result.append(city)
+    return result
+matching_cities = find_matching_cities(CITY_OPTIONS,CITY_OPTIONS_SWAGGER)
 
+# MATCHING_CITIES = ['Ashdod', 'Ashkelon', 'Bat Yam', 'Bnei Brak', 'Dimona', 'Eilat', 'Givatayim', 'Hadera',
+#                    'Haifa', 'Herzliya', 'Holon', 'Jerusalem', 'Kfar Saba', 'Nazareth', 'Netanya', 'Petah Tikva',
+#                    'Ramat Gan', 'Rehovot', 'Rishon LeZion', 'Sderot', 'Tel Aviv', 'Tiberias']
+#----------------------------------------------------------------------------------------------------------
+swagger_cities_only = list(set(CITY_OPTIONS_SWAGGER) - set(matching_cities))
+
+# SWAGGER_CITIES_ONLY = ["Beer Sheva", "Hod HaSharon", "Modiin", "Qiryat Ata", "Qiryat Bialik",
+#                        "Qiryat Gat", "Qiryat Malakhi", "Qiryat Motzkin", "Qiryat Ono",
+#                        "Qiryat Shemona", "Qiryat Tivon", "Qiryat Yam", "Qiryat Ye'arim",
+#                        "Qiryat Yovel","Raanana"]
+#----------------------------------------------------------------------------------------------------------
 FUEL_OPTIONS = ["Petrol","Diesel","Hybrid","Electric"]
 MANUFACTURE_OPTIONS = ["Toyota", "Honda", "Ford", "BMW", "Mazda"]
 MODEL_OPTIONS = ["Camry", "Civic", "Focus", "X5", "Premium"]
@@ -24,7 +51,7 @@ def create_car(city = None, fuel = None, manufacture = None, model = None, year 
                seats=None, car_class = None, serial_number = None, price_per_day = None,
                gear = None, wheels_drive = None, photo_path=None):
     return Car(
-        city=city if city is not None else faker.random_element(CITY_OPTIONS),
+        city=city if city is not None else faker.random_element(matching_cities),
         manufacture=manufacture if manufacture is not None else faker.random_element(MANUFACTURE_OPTIONS),
         model=model if model is not None else faker.random_element(MODEL_OPTIONS),
         year=year if year is not None else faker.random_int(min=2000, max=2026),
