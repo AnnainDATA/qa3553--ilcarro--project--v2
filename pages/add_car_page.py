@@ -26,7 +26,8 @@ class AddCarPage(BasePage):
     PHOTO_FILE_INPUT = (By.ID,"photo-file")
 
     def open_car_form(self):
-        self.click(self.CAR_WORK_BTN)
+        #self.click(self.CAR_WORK_BTN)
+        self.driver.get(self.CAR_WORK_URL)
         time.sleep(2)
 
     def fill_city(self,city):
@@ -69,7 +70,7 @@ class AddCarPage(BasePage):
         self.click(self.SUBMIT_BTN)
         time.sleep(3)
 
-    def fill_car(self,car):
+    def fill_car(self, car):
         self.fill_city(car.city)
         self.fill_manufacture(car.manufacture)
         self.fill_model(car.model)
@@ -79,10 +80,17 @@ class AddCarPage(BasePage):
         self.select_wheels_drive(car.wheels_drive)
         self.fill_seats(car.seats)
         self.fill_car_class(car.car_class)
+        self.fill_serial_number(car.serial_number)
+        self.fill_price(car.price_per_day)
+        if car.photo_path:
+            self.upload_photo(car.photo_path)
 
     def error_message_text(self):
         element = WebDriverWait(self.driver, 5).until(
             EC.visibility_of_element_located(self.ERROR_MESSAGE))
         return element.text
 
+    def upload_photo(self,file_path):
+        absolute_path = os.path.abspath(file_path)
+        self.find(self.PHOTO_FILE_INPUT).send_keys(absolute_path)
 

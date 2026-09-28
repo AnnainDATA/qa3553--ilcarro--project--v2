@@ -43,6 +43,7 @@ class LoginPage(BasePage):
 
     def submit_login(self):
         self.click(self.YALLA_BTN)
+        time.sleep(3)
 
 # General method for filling in login and password
     def login(self,email,password):
