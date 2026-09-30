@@ -1,6 +1,7 @@
 import random
 import time
 import pytest
+from selenium.common import TimeoutException
 
 from data.user_data import create_user
 from pages.registration_page import RegistrationPage
@@ -197,3 +198,57 @@ def test_registration_success_five_times(driver):
         registration_page.check_policy()
         registration_page.submit_registration()
         registration_page.close_window()
+
+# ---------------------------------------------------
+# required
+# min = 6-8
+# (a-z, A-Z)
+# min 1 digit 0-9
+# !@#$%^&*
+INVALID_PWD = [
+    "",
+    "      ",
+    "123456789",
+    "Anna1",
+    "Marry!",
+    "SimonSimonSimonSimon123456123456$$$!!!",
+    "!@#$%^&*AAzz123456",
+    " MaryE1971!",
+    "MaryE1971! ",
+    "MaryE 1971!",
+    "СимонИ1971!",
+    "MaryElvis^^@",
+    "MaryEl1971"
+    ]
+@pytest.mark.skip (reason  = "not completed")
+@pytest.mark.parametrize("invalid_password", INVALID_PWD)
+def test_registration_with_incorrect_password(driver,invalid_password):
+    registration_page = RegistrationPage(driver)
+    user = create_user(password=invalid_password)
+
+    registration_page.open_registration_form()
+    registration_page.fill_registration_form(user)
+    registration_page.check_policy()
+    registration_page.submit_registration()
+    #assert registration_page.submit_button_disabled(), f"Submit button is enabled for password: {invalid_password}"
+
+    try:
+        error_text = registration_page.confirmation_text()
+        expected_errors = [
+        "Password must contain minimum 6 symbols",
+        "Password must contain at least 1 letter and 1 number",
+        "Password is required",
+        "Registration failed"
+        ]
+        assert error_text in expected_errors, f"Unexpected error text '{error_text}' for password: {invalid_password}"
+    except TimeoutException:
+        pass
+
+    # assert registration_page.error_message_text() == "Password must contain minimum 6 symbols"
+    # assert registration_page.submit_button_disabled()
+    # assert registration_page.submit_button_disabled()
+    # assert registration_page.confirmation_text() == "Password must contain minimum 6 symbols"
+    # assert registration_page.confirmation_text() == "Password must contain at least 1 letter and 1 number"
+    # assert registration_page.confirmation_text() == "Password is required"
+    # assert registration_page.confirmation_text() == "Registration failed"
+    # assert registration_page.confirmation_message() == '"[object Object]"' # it's a wrong alert message!
